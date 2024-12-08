@@ -1,29 +1,12 @@
 use {
-    crate::types::{Property, Strategy, Type, Value},
-    alloy::primitives::{b256, keccak256, B256},
-    serde::Serialize,
+    alloy::primitives::{b256, B256},
+    mish::{
+        seed_objects::Objects,
+        types::{Property, Strategy, Type, Value},
+    },
     std::{collections::HashMap, time::Duration},
     url::Url,
 };
-
-struct Objects {
-    seed_objects: HashMap<B256, serde_json::Value>,
-}
-
-impl Objects {
-    fn new() -> Self {
-        Self {
-            seed_objects: HashMap::new(),
-        }
-    }
-
-    fn add(&mut self, obj: impl Serialize) -> B256 {
-        let hash = keccak256(serde_json::to_vec(&obj).unwrap());
-        let obj = serde_json::to_value(obj).unwrap();
-        self.seed_objects.insert(hash, obj);
-        hash
-    }
-}
 
 #[derive(Clone)]
 pub struct SeedObjects {
@@ -33,6 +16,8 @@ pub struct SeedObjects {
 }
 
 pub fn get_seed_objects() -> (HashMap<B256, serde_json::Value>, SeedObjects) {
+    let _std_seed_objects = mish::seed_objects::get_std_seed_objects();
+
     let mut obj = Objects::new();
 
     let state = obj.add(Type {

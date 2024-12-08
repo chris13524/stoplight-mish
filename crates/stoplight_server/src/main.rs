@@ -5,12 +5,10 @@ use {
     tokio::sync::RwLock,
 };
 
-mod client_fn;
 mod handlers;
 mod seed_objects;
 mod server_fn;
 mod state;
-mod types;
 
 #[tokio::main]
 async fn main() {
@@ -27,8 +25,6 @@ async fn main() {
         shared_state.clone(),
         seed_objects.clone(),
     ));
-
-    tokio::task::spawn(client_fn::client_fn(seed_objects));
 
     let app = Router::new()
         .route("/object/:object_hash", get(handlers::get_object::handler))

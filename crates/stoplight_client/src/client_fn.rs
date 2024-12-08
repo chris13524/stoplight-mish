@@ -1,11 +1,10 @@
 use {
-    crate::{
-        seed_objects::SeedObjects,
-        types::{Property, Strategy},
-    },
     alloy::{primitives::B256, transports::http::reqwest},
+    mish::types::{Property, Strategy},
     serde_json::Value,
     std::collections::HashMap,
+    stoplight_server::seed_objects::SeedObjects,
+    tracing::info,
 };
 
 pub async fn client_fn(seed_objects: (HashMap<B256, Value>, SeedObjects)) {
@@ -21,7 +20,7 @@ pub async fn client_fn(seed_objects: (HashMap<B256, Value>, SeedObjects)) {
         serde_json::from_value::<Strategy>(seed_objects.0.get(&property.strategy).unwrap().clone())
             .unwrap();
     match strategy {
-        crate::types::Strategy::HttpPollGet {
+        Strategy::HttpPollGet {
             endpoint,
             poll_interval,
         } => loop {
@@ -40,7 +39,7 @@ pub async fn client_fn(seed_objects: (HashMap<B256, Value>, SeedObjects)) {
                 x if x == seed_objects.1.off => false,
                 _ => panic!("Invalid response: {response}"),
             };
-            println!("state: {state}");
+            info!("state: {state}");
 
             tokio::time::sleep(poll_interval).await;
         },

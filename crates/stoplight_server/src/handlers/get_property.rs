@@ -8,13 +8,16 @@ use {
 };
 
 #[axum::debug_handler]
-pub async fn handler(Path(property_hash): Path<B256>, State(state): State<AppState>) -> Json<B256> {
+pub async fn handler(
+    Path(property_hash): Path<B256>,
+    State(state): State<AppState>,
+) -> Json<Option<B256>> {
     Json(
-        *state
+        state
             .property_store
             .read()
             .await
             .get(&property_hash)
-            .unwrap(),
+            .cloned(),
     )
 }

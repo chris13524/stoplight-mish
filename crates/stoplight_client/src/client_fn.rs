@@ -33,7 +33,7 @@ pub async fn client_fn(seed_objects: (HashMap<B256, Value>, SeedObjects)) {
             .unwrap()
             .json::<B256>()
             .await
-            .unwrap();
+            .unwrap_or(property.initial_value);
             let state = match response {
                 x if x == seed_objects.1.on => true,
                 x if x == seed_objects.1.off => false,
